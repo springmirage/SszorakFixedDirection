@@ -1,0 +1,26 @@
+<Bindings>
+<Binding name="SszorakFixedDirection_WIND_1" category="SSZORAKFIXEDDIRECTION_WIND">
+        local t = unpack(SszorakFixedDirection); local m = t and t.moduleMap and t.moduleMap.WindOctagon; if m and m.SendWind then m:SendWind(1) end
+    </Binding>
+<Binding name="SszorakFixedDirection_WIND_2" category="SSZORAKFIXEDDIRECTION_WIND">
+        local t = unpack(SszorakFixedDirection); local m = t and t.moduleMap and t.moduleMap.WindOctagon; if m and m.SendWind then m:SendWind(2) end
+    </Binding>
+<Binding name="SszorakFixedDirection_WIND_3" category="SSZORAKFIXEDDIRECTION_WIND">
+        local t = unpack(SszorakFixedDirection); local m = t and t.moduleMap and t.moduleMap.WindOctagon; if m and m.SendWind then m:SendWind(3) end
+    </Binding>
+<Binding name="SszorakFixedDirection_WIND_4" category="SSZORAKFIXEDDIRECTION_WIND">
+        local t = unpack(SszorakFixedDirection); local m = t and t.moduleMap and t.moduleMap.WindOctagon; if m and m.SendWind then m:SendWind(4) end
+    </Binding>
+<Binding name="SszorakFixedDirection_WIND_5" category="SSZORAKFIXEDDIRECTION_WIND">
+        local t = unpack(SszorakFixedDirection); local m = t and t.moduleMap and t.moduleMap.WindOctagon; if m and m.SendWind then m:SendWind(5) end
+    </Binding>
+<Binding name="SszorakFixedDirection_WIND_6" category="SSZORAKFIXEDDIRECTION_WIND">
+        local t = unpack(SszorakFixedDirection); local m = t and t.moduleMap and t.moduleMap.WindOctagon; if m and m.SendWind then m:SendWind(6) end
+    </Binding>
+<Binding name="SszorakFixedDirection_WIND_7" category="SSZORAKFIXEDDIRECTION_WIND">
+        local t = unpack(SszorakFixedDirection); local m = t and t.moduleMap and t.moduleMap.WindOctagon; if m and m.SendWind then m:SendWind(7) end
+    </Binding>
+<Binding name="SszorakFixedDirection_WIND_8" category="SSZORAKFIXEDDIRECTION_WIND">
+        local t = unpack(SszorakFixedDirection); local m = t and t.moduleMap and t.moduleMap.WindOctagon; if m and m.SendWind then m:SendWind(8) end
+    </Binding>
+</Bindings>

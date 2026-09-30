@@ -1,0 +1,25 @@
+## Interface: 120100
+## Title: Sszorak Fixed Direction
+## Notes: M5 fixed tactical compass; face the boss before following directions.
+## Version: V0.4.1-p0
+## SavedVariables: SszorakFixedDirectionDB
+core\init.lua
+core\runtime_clock.lua
+core\locale.lua
+core\module.lua
+core\diagnostics.lua
+core\widget_api.lua
+modules\WindOctagon\compass_logic.lua
+core\tts.lua
+core\notify.lua
+core\notify_anchor_locale.lua
+core\notify_anchor.lua
+core\template.lua
+core\fixed.lua
+modules\WindOctagon\init.lua
+modules\OrbPositionAlert\init.lua
+modules\WindOctagon\options.lua
+modules\SerpentFuryAlert\init.lua
+core\test_harness.lua
+core\settings.lua
+core\startup.lua
