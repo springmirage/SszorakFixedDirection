@@ -1,4 +1,4 @@
-# Sszorak Fixed Direction · V0.4.1-p0
+# Sszorak Fixed Direction · v0.5
 
 输入 `/sfd` 或 `/m5` 打开设置。
 
