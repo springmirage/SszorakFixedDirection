@@ -71,7 +71,7 @@ end
 function F:TargetText(slot,marker)
 local name=NAMES[marker];if not name then return nil end
 if slot==4 then
-return"去"..name.."放球 · BOSS脚下","去"..name.."放球，BOSS脚下"
+return"去"..name.."放球 BOSS脚下","去"..name.."放球，BOSS脚下"
 end
 end
 function F:Expiry(slot,cycle)
@@ -95,7 +95,7 @@ fireAt=GetTime(),tag="sszorak_orb_position",channels={
 TEXT={duration=duration,legacyLifetime=true,attention=true,textColor={0.25,1,0.45},
 renderText=function(fs,countdown)
 if slot==4 then
-fs:SetFormattedText("去%s放球 · BOSS脚下 (%s)",
+fs:SetFormattedText("去%s放球 BOSS脚下 (%s)",
 "|T"..T.addonPath.."media\\WindOctagon\\"..token.."_o:40:40|t",countdown)
 else
 fs:SetFormattedText("去|T"..T.addonPath.."media\\WindOctagon\\%s_o:40:40|t放球 (%s)",token,countdown)
@@ -237,9 +237,8 @@ self:UpdateSenderStatus()
 self:RefreshPoint4();self:PaintHighlights()
 end
 function F:RefreshPrewarn(voice)
-if voice and self.prewarn then
-self:Say("囊肿准备，面对BOSS","sfd_pre",math.max(1,self.prewarn.expires-GetTime()))
-end
+-- Preparation still drives compass state, but has no text or voice alert.
+T.Notify:CancelByTag("sfd_pre")
 end
 function F:Prewarn(pair)
 self.cystRound=pair==1 and"FIRST"or"SECOND"

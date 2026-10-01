@@ -1,4 +1,4 @@
-# Sszorak Fixed Direction · v0.5
+# Sszorak Fixed Direction · V0.6
 
 输入 `/sfd` 或 `/m5` 打开设置。
 
@@ -7,7 +7,7 @@
 真实点名继续使用旧 DFT 2026.09.11 的分类、识别窗口和 slot 锁；未扩窗。
 个人放球提示改为成功显示后持续配置时长（默认11秒），随后0.5秒淡出，不再被固定爆炸时间拒绝或提前清除。若新的个人提示到来，仍按当前 SFD 行为替换旧提示，并记录 ASSIGNMENT_REPLACED。
 severity / duration 为 Secret 时安全拒绝，记录 SECRET_CLASSIFICATION_FIELDS；不降级为只看时间的识别。其余不命中窗口记录 NO_WINDOW。
-已恢复囊肿前“囊肿准备，面对BOSS”提醒。
+囊肿准备阶段不播放“囊肿准备，面对BOSS”语音，也不显示该文字提示。
 
 诊断自动保存在 SszorakFixedDirectionDB.diagnostics，最多10场、每场300条；正式战斗标 RAID，脱战测试标 TEST。超限丢弃最旧记录，droppedEvents 表示已裁剪数量。
 `/sfd diag status` 查看保存场次、最近编号、事件数和版本；`/sfd diag clear` 清空记录（之后下一场重新记录）。

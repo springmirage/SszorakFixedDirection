@@ -5,4 +5,4 @@ local T=ns[1]
 T.addonName=addon
 T.addonPath="Interface\\AddOns\\"..addon.."\\"
 T.modules={};T.moduleMap={};T.noop=function()end
-T.version="v0.5"
+T.version="V0.6"

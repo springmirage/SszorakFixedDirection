@@ -24,6 +24,17 @@ db.anchors=db.anchors or{}
 db.anchors.TEXT=db.anchors.TEXT or{point="CENTER",relPoint="CENTER",x=0,y=145}
 db.channelDefaults.TEXT=db.channelDefaults.TEXT or{size=30,alignment="CENTER",grow="UP"}
 end
+local function fitAttention(frame)
+if not(frame.attention and frame.fs)then return end
+local fs=frame.fs
+fs:SetWordWrap(false)
+fs:SetWidth(0)
+local width=fs:GetStringWidth()
+local offset=frame.icon and frame.icon:IsShown()and 56 or 0
+local textWidth=math.max(410,width+20)
+fs:SetWidth(textWidth)
+frame:SetWidth(math.max(440,textWidth+30+offset))
+end
 local function position(frame,tag)
 local channel=frame.channel or"TEXT"
 local d=mod.db.channelDefaults[channel];local a=mod.db.anchors[channel]
@@ -31,6 +42,7 @@ frame:ClearAllPoints()
 local offset=tag=="sfd_pre"and(d.grow=="DOWN"and 60 or -60)or 0
 frame:SetPoint(a.point,UIParent,a.relPoint,a.x,a.y+offset)
 if frame.fs then frame.fs:SetFont(STANDARD_TEXT_FONT,d.size or 30,frame.attention and"THICKOUTLINE"or"OUTLINE");frame.fs:SetJustifyH(frame.attention and channel=="TEXT"and"CENTER"or(d.alignment or"CENTER"))end
+fitAttention(frame)
 end
 function textChannel:Reposition()for tag,entry in pairs(active)do position(entry.frame,tag)end end
 textChannel.UpdateAllSettings=textChannel.Reposition
@@ -84,6 +96,7 @@ f:SetSize(f.attention and 440 or 680,f.attention and 84 or 95)
 f:SetFrameStrata("DIALOG")
 local fs=f.fs or f:CreateFontString(nil,"OVERLAY");f.fs=fs
 fs:SetFont(STANDARD_TEXT_FONT,30,"OUTLINE");fs:ClearAllPoints();fs:SetPoint("CENTER",f,"CENTER",f.attention and text.renderIcon and 28 or 0,0);fs:SetWidth(f.attention and 410 or 680)
+fs:SetWordWrap(not f.attention)
 if f.icon then f.icon:Hide()end
 if f.attention and text.renderIcon then
 local icon=f.icon or f:CreateFontString(nil,"OVERLAY");f.icon=icon
@@ -116,6 +129,7 @@ local ok=pcall(text.renderText,fs,text.legacyLifetime and countdown(duration)or"
 rendered=ok
 if not ok then fs:SetText("放球点数据缺失")end
 else fs:SetText(text.text or"")end
+fitAttention(f)
 local entry={frame=f,onClear=text.onClear};active[tag]=entry
 local fade=text.legacyLifetime and 0.5 or 0
 if text.legacyLifetime then
@@ -127,6 +141,7 @@ local now=C_Timer.GetTime()
 if now>=nextUpdate then
 nextUpdate=now+0.1
 if text.renderText then pcall(text.renderText,fs,countdown(duration-(now-started)))end
+fitAttention(frame)
 end
 if now>=started+duration then frame:SetAlpha(math.max(0,1-(now-started-duration)/fade))end
 end)
