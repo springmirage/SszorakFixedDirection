@@ -78,7 +78,7 @@ text(f,"Sszorak Fixed Direction",24,-24,650,22)
 text(f,"固定罗盘 · 放球提醒 · 脱战练习",24,-57,650,13)
 button(f,"关闭",674,-24,62,function()f:Hide()end)
 self.tabs={};self.pages={}
-for i,name in ipairs({"常规","位置设置","测试"})do
+for i,name in ipairs({"常规","位置设置","测试","版本检测"})do
 local page=name
 self.tabs[name]=button(f,name,20,-104-(i-1)*44,126,function()S:Select(page)end)
 local p=W:BackdropFrame(f,.106,.129,.157,1,.19,.22,.27,1)
@@ -126,7 +126,71 @@ button(p,"00:20",282,-377,80,function()H:Jump(20)end)
 button(p,"02:00",374,-377,80,function()H:Jump(120)end)
 button(p,"05:00",466,-377,80,function()H:Jump(300)end)
 self.summary=text(p,"",24,-424,526,13)
-self:CreateHUD();self:Select(self.page);self:Refresh()
+self:CreateVersionPage();self:CreateHUD();self:Select(self.page);self:Refresh()
+end
+function S:CreateVersionPage()
+local p=self.pages["版本检测"]
+text(p,"版本检测",24,-22,510,20)
+text(p,"本机检测基准："..T.version,24,-52,510,13)
+self.versionButton=button(p,"检测版本",24,-78,150,function()T.VersionCheck:StartScan()end)
+self.versionSummary=text(p,"点击检测版本，查询当前队伍或团队。",24,-118,526,12)
+text(p,"角色名（服务器）",24,-175,190,13);text(p,"在线状态",218,-175,62,12)
+text(p,"检测版本",284,-175,82,12);text(p,"版本判断",370,-175,158,12)
+local scroll=CreateFrame("ScrollFrame",nil,p,"UIPanelScrollFrameTemplate")
+scroll:SetPoint("TOPLEFT",24,-200);scroll:SetSize(504,266)
+local content=CreateFrame("Frame",nil,scroll);content:SetSize(504,1760);scroll:SetScrollChild(content)
+self.versionContent=content
+self.versionRows={}
+for i=1,40 do
+local y=-(i-1)*44
+self.versionRows[i]={name=text(content,"",0,y,190,12),online=text(content,"",194,y,62,12),
+version=text(content,"",260,y,82,12),status=text(content,"",346,y,158,12)}
+for _,fs in pairs(self.versionRows[i])do fs:SetHeight(40)end
+local rowIndex=i
+local hit=CreateFrame("Frame",nil,content);hit:SetPoint("TOPLEFT",0,y);hit:SetSize(504,42);hit:EnableMouse(true)
+hit:SetScript("OnEnter",function(owner)
+local row=T.VersionCheck.rows[rowIndex]
+if not row then return end
+GameTooltip:SetOwner(owner,"ANCHOR_RIGHT")
+GameTooltip:AddLine(row.name:gsub("|","||"))
+GameTooltip:AddLine(row.connection or"")
+GameTooltip:AddLine("版本："..(row.version and row.version:gsub("|","||")or"未检测到"))
+GameTooltip:AddLine(row.version and("已加载 · "..row.judgment)or row.state)
+GameTooltip:Show()
+end)
+hit:SetScript("OnLeave",function()GameTooltip:Hide()end)
+end
+text(p,"未响应：可能未安装、未启用、旧版无回报能力或通信失败。\n版本仅与本机基准比较，不代表官方最新版。",24,-484,526,12)
+T.VersionCheck.onChanged=function()S:RefreshVersions()end
+self:RefreshVersions()
+end
+function S:RefreshVersions()
+if not self.versionRows then return end
+local v=T.VersionCheck
+local loaded,missing,outdated=0,0,0
+for i,widgets in ipairs(self.versionRows)do
+local row=v.rows[i]
+widgets.name:SetText(row and row.name:gsub("|","||")or"")
+widgets.online:SetText(row and row.connection or"")
+widgets.version:SetText(row and(row.version and row.version:gsub("|","||")or"—")or"")
+widgets.status:SetText(row and(row.version and("已加载\n"..row.judgment)or row.state)or"")
+local classColor=row and RAID_CLASS_COLORS and RAID_CLASS_COLORS[row.class]
+widgets.name:SetTextColor(classColor and classColor.r or .89,classColor and classColor.g or .92,classColor and classColor.b or .95)
+local color=row and row.version and(row.judgment=="与本机一致"and{.3,.9,.4}or{1,.75,.3})or{.7,.7,.7}
+widgets.status:SetTextColor(unpack(color))
+if row then
+if row.version then loaded=loaded+1;if row.judgment=="需要更新"then outdated=outdated+1 end
+elseif row.online and not row.departed then missing=missing+1 end
+end
+end
+self.versionContent:SetHeight(math.max(266,#v.rows*44))
+self.versionButton:SetEnabled(not v.scanning)
+self.versionButton:SetText_(v.scanning and("检测中（"..(v.remaining or 5).."秒）")or"检测版本")
+self.versionButton.label:SetTextColor(v.scanning and .5 or .89,v.scanning and .5 or .92,v.scanning and .5 or .95)
+local state=v.message or(#v.rows==0 and"点击检测版本，查询当前队伍或团队。"or
+string.format("%s · 已加载 %d/%d · 需要更新 %d · %s %d",v.scanning and("检测中，剩余"..(v.remaining or 5).."秒")or"检测完成",loaded,#v.rows,outdated,v.scanning and"等待回报"or"未响应",missing))
+if(v.newcomers or 0)>0 then state=state.."\n新加入"..v.newcomers.."人，请下次检测。"end
+self.versionSummary:SetText(state)
 end
 function S:CreateHUD()
 local hud=W:BackdropFrame(UIParent,.078,.094,.114,.94,.41,.79,.68,1)
