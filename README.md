@@ -4,7 +4,7 @@
 
 ## 开发与维护索引
 
-后续维护版本检测功能时先阅读 [版本检测技术参考](docs/VERSION_CHECK_REFERENCE.md)。STT 源目录将被删除，参考文档已保存通信协议、源码位置与哈希、缓存边界及历史版本兼容证据；SFD 运行不依赖 STT。
+后续维护版本检测功能时先阅读 [版本检测技术参考](docs/VERSION_CHECK_REFERENCE.md)。
 
 V0.7 的修改文件、SFD协议、验收结果和游戏内实测清单见 [版本检测实现与验收](docs/VERSION_CHECK_IMPLEMENTATION.md)。
 
