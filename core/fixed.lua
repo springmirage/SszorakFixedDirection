@@ -71,42 +71,49 @@ end
 function F:TargetText(slot,marker)
 local name=NAMES[marker];if not name then return nil end
 if slot==4 then
-return"去"..name.."放球 BOSS脚下","去"..name.."放球，BOSS脚下"
+return"去"..name.."放球 · BOSS脚下","去"..name.."放球，BOSS脚下"
 end
+end
+function F:RefreshAssignment(voice)
+local a=self.assignment;if not a then return end
+local duration=math.max(0,a.expires-GetTime())
+if duration<=0 then return end
+a.presentationStart=a.presentationStart or GetTime()
+T.Notify:Schedule({id="sfd_assignment",tag="sfd_assignment",channels={
+TEXT={duration=duration,attention=true,attentionStart=a.presentationStart,renderText=function(fs)
+if a.slot==4 then
+fs:SetText("去|T"..T.addonPath.."media\\WindOctagon\\w"..OPPOSITE[a.marker].."_o:40:40|t放球 · BOSS脚下")
+else
+fs:SetFormattedText("去|T"..T.addonPath.."media\\WindOctagon\\%s_o:40:40|t放球",a.token)
+end
+end},TTS=voice and{text=a.slot==4 and("去"..NAMES[a.marker].."放球，BOSS脚下")or L.orbpos_alert_tts}or nil,
+}})
+end
+function F:MissingAssignment(window)
+local expiry=self:Expiry(window.assignment.slot,window.round)
+if expiry<=GetTime()then return end
+self.highlights={};self:PaintHighlights()
+self:Say("放球点数据缺失","sfd_assignment",expiry-GetTime())
 end
 function F:Expiry(slot,cycle)
 local row=self.expiries[cycle or self.cycle]
 return self.startedAt+(row and row[slot]or(self.elapsed or 0)+15)
 end
-function F:Assignment(window,token,mode,duration)
-T:DiagnosticCall("Assignment",window.key,window.assignment.slot)
--- Presentation adapter only. No timeline/active/cycle/expiry admission decision.
-if not(T.Notify and T.Notify.Schedule)then return false end
+function F:Assignment(window,token,mode)
+if not self.active then return false end
 local slot=window.assignment.slot
 local marker=slot==4 and self:Point4Marker()or nil
-local a={slot=slot,marker=marker,token=token,expires=GetTime()+duration,windowIndex=window.index}
-self.assignment=a
+if slot==4 and not marker then self:MissingAssignment(window);return false end
+local expires=self:Expiry(slot,window.round)
+if expires<=GetTime()then return false end
+self.assignment={slot=slot,marker=marker,token=token,expires=expires}
+self.tokens[slot]=token
 self.highlights=slot==4 and{[4]="HIGH"}or{}
 self.prewarn=nil
 T.Notify:CancelByTag("sfd_pre")
 self:PaintHighlights()
-T.Notify:Schedule({id=string.format("dft_orb_position_%d_%.0f",window.index,GetTime()*1000),
-fireAt=GetTime(),tag="sszorak_orb_position",channels={
-TEXT={duration=duration,legacyLifetime=true,attention=true,textColor={0.25,1,0.45},
-renderText=function(fs,countdown)
-if slot==4 then
-fs:SetFormattedText("去%s放球 BOSS脚下 (%s)",
-"|T"..T.addonPath.."media\\WindOctagon\\"..token.."_o:40:40|t",countdown)
-else
-fs:SetFormattedText("去|T"..T.addonPath.."media\\WindOctagon\\%s_o:40:40|t放球 (%s)",token,countdown)
-end
-end,
-onClear=function()
-if F.assignment==a then F.assignment=nil;F.highlights[4]=nil;F:PaintHighlights()end
-end},
-TTS={text=slot==4 and(marker and("去"..NAMES[marker].."放球，BOSS脚下")or"去BOSS脚下放球")or L.orbpos_alert_tts},
-}})
-T:Fire("ORB_POSITION_ALERT_COMPASS_SHOW",token,mode or"opposite",10)
+self:RefreshAssignment(true)
+T:Fire("ORB_POSITION_ALERT_COMPASS_SHOW",token,"opposite",expires-GetTime())
 return true
 end
 function F:AttachCompass(f)
@@ -224,21 +231,19 @@ self.bossAnchor=anchor
 -- Boss movement and Point4 retain their original timing; STAR visuals wait for both cysts.
 if anchor=="MOON"then self:SetCompassAnchor(anchor)end
 self:RefreshPoint4()
-self:PaintHighlights()
+self:PaintHighlights();self:RefreshAssignment(false)
 local role=self:PlayerInfo()
 if role=="TANK"then self:Say("BOSS带到"..(anchor=="MOON"and"月亮"or anchor=="STAR"and"星星"or"中场"),"sfd_tank",5)end
 end
 function F:BeginCycle(cycle)
-self.cycle=cycle;self.cystRound=nil;self.secondAnchor=nil;self.points={};self.tokens={};self.tokenReady={};self.prewarn=nil;self.highlights={};self.ready=false;self.senderClicks=0
-T.Notify:CancelByTag("sfd_pre")
-T:Diagnostic("TIMELINE_RESET",{resetReason="CYCLE_START"})
+self.cycle=cycle;self.cystRound=nil;self.secondAnchor=nil;self.points={};self.tokens={};self.tokenReady={};self.prewarn=nil;self.highlights={};self.ready=false;self.senderClicks=0;self.assignment=nil
+T.Notify:CancelByTag("sfd_assignment");T.Notify:CancelByTag("sfd_pre")
 T.moduleMap.WindOctagon:SFDResetCycle()
 self:UpdateSenderStatus()
 self:RefreshPoint4();self:PaintHighlights()
 end
 function F:RefreshPrewarn(voice)
--- Preparation still drives compass state, but has no text or voice alert.
-T.Notify:CancelByTag("sfd_pre")
+-- Output retired; Prewarn retains round, anchor and highlight preparation.
 end
 function F:Prewarn(pair)
 self.cystRound=pair==1 and"FIRST"or"SECOND"
@@ -252,8 +257,11 @@ self.prewarn={pair=pair,expires=self:Expiry(first+1)}
 self:RefreshPrewarn(true)
 end
 function F:Expire(slot)
-if not(self.assignment and self.assignment.slot==slot)then self.highlights[slot]=nil end
--- Timeline expiry clears preparation only; Notify owns the personal lifetime.
+self.highlights[slot]=nil
+if self.assignment and self.assignment.slot==slot then
+self.assignment=nil;T.Notify:CancelByTag("sfd_assignment")
+T:Fire("ORB_POSITION_ALERT_COMPASS_HIDE")
+end
 if slot==2 or slot==4 then self.prewarn=nil;T.Notify:CancelByTag("sfd_pre")end
 self:PaintHighlights()
 end
@@ -285,26 +293,20 @@ if elapsed>=T.SFD_LOGICAL_TIMELINE_END and self.ticker then self.ticker:Cancel()
 end
 function F:Start(id,difficulty)
 if id~=3420 or not self:IsMythic(difficulty)then return end
-if self.active then return end -- Duplicate start must not wipe points or assignments.
-self:Stop("START_PREPARE")
-self.active=true;self.startedAt=GetTime();self.nextEvent=1;self.elapsed=0;self.visualAngle=0;self.bossAnchor="MOON";self.facingAnchor="MOON"
+self:Stop()
+self.active=true;self.startedAt=GetTime();self.nextEvent=1;self.elapsed=0;self.visualAngle=0;self.bossAnchor=nil;self.facingAnchor="MOON"
 self.chatReceived=0
-T:DiagnosticCall("Begin",id,difficulty,self.startedAt)
 T:Fire("BOSS_ENGAGED",id,difficulty,self.startedAt)
 self:BeginCycle(1)
 self.ticker=C_Timer.NewTicker(0.05,function()self:Tick(GetTime()-self.startedAt)end)
 end
-function F:Stop(reason)
-reason=reason or"RUNTIME_RESET"
-T:Diagnostic("RUNTIME_RESET",{resetReason=reason})
-T:Diagnostic("TIMELINE_RESET",{resetReason=reason})
+function F:Stop()
 if self.ticker then self.ticker:Cancel();self.ticker=nil end
 for _,timer in ipairs(self.timers)do timer:Cancel()end
 self.timers={};self.active=false;self.points={};self.tokens={};self.tokenReady={};self.prewarn=nil;self.highlights={};self.assignment=nil;self.ready=false;self.senderClicks=0
 self.bossDisplayAnchor=nil;self.bossMoving=false;self.bossFieldY=nil;self.bossMoveTo=nil;self.bossMoveFrom=nil;self.bossMoveStarted=nil
 self.cycle=nil;self.cystRound=nil;self.secondAnchor=nil;self.bossAnchor=nil;self.facingAnchor=nil;self.compassState="IDLE";self.animating=false;self.visualAngle=0;self.nextEvent=1
 T.Notify:CancelAll();T:Fire("BOSS_DISENGAGED",3420)
-T:DiagnosticCall("Finish",reason)
 if T.moduleMap.WindOctagon.db then T.moduleMap.WindOctagon:SFDStop()end
 self:PaintHighlights();self:RenderBossIcon()
 end

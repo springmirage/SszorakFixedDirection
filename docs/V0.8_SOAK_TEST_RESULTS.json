@@ -1,0 +1,118 @@
+{
+  "checks": [
+    {
+      "case": "default six rows; fixed 345 times derive 96/96/96",
+      "pass": true
+    },
+    {
+      "case": "seconds, decimals, ASCII and Chinese colon parsing",
+      "pass": true
+    },
+    {
+      "case": "integer fury boundaries and third-round joint constraint; invalid inputs never apply",
+      "pass": true
+    },
+    {
+      "case": "time mode exact fractions retained; upstream energy mode shifts second; fixed rows stay fixed",
+      "pass": true
+    },
+    {
+      "case": "time range validation rejects below60, 100, rounding to100, and invalid third fury",
+      "pass": true
+    },
+    {
+      "case": "fixed rows cannot be overwritten via local config or network schema",
+      "pass": true
+    },
+    {
+      "case": "all fixed fury <100: 100 and rounding to100 rejected; 98 remains variable",
+      "pass": true
+    },
+    {
+      "case": "actual sidebar tab and six rows; fixed rows lack editable mode/input; warning wording",
+      "pass": true
+    },
+    {
+      "case": "UI preview, save and conversion through real input scripts; invalid edit preserves saved table",
+      "pass": true
+    },
+    {
+      "case": "UI time and fury selectors populate corresponding values and linked preview",
+      "pass": true
+    },
+    {
+      "case": "persistence saved to module memory; reload initializes exact fractional time",
+      "pass": true
+    },
+    {
+      "case": "malformed old saved config uses defaults without erasing old evidence",
+      "pass": true
+    },
+    {
+      "case": "real combat entry locks save and sync; end allows save and sync",
+      "pass": true
+    },
+    {
+      "case": "combat lock, replay and chat lockdown reject incoming sync",
+      "pass": true
+    },
+    {
+      "case": "nonleader cannot send and nonleader/cross-realm imposter cannot overwrite",
+      "pass": true
+    },
+    {
+      "case": "wrong prefix/channel, future schema, malformed and invalid values rejected",
+      "pass": true
+    },
+    {
+      "case": "duplicate and late revisions ignored; a newer revision applies atomically",
+      "pass": true
+    },
+    {
+      "case": "same realm short sender name accepted; incoming message refreshes visible panel",
+      "pass": true
+    },
+    {
+      "case": "restricted-value surrogate messages ignored before inspecting their values",
+      "pass": true
+    },
+    {
+      "case": "send single small payload to RAID; throttled attempts and restrictions reported",
+      "pass": true
+    },
+    {
+      "case": "instance raid channel; not in raid prevents send",
+      "pass": true
+    },
+    {
+      "case": "sender own delayed echo cannot overwrite a newer unsent local save",
+      "pass": true
+    },
+    {
+      "case": "duplicate registration enum accepted; failed prefix registration prevents send",
+      "pass": true
+    },
+    {
+      "case": "max prefix enum rejected and exposed as send failure",
+      "pass": true
+    },
+    {
+      "case": "every rejected save/send/UI attempt prints concrete reason locally",
+      "pass": true
+    },
+    {
+      "case": "every rejected own-protocol incoming packet prints reason; unrelated addon traffic ignored",
+      "pass": true
+    },
+    {
+      "case": "two independent clients identical all six times/targets after actual addon-message event",
+      "pass": true
+    },
+    {
+      "case": "received settings used through actual encounter/ticker/energy UI and five-second reset",
+      "pass": true
+    }
+  ],
+  "realClientNetworkVerified": false,
+  "realCombatVerified": false
+}

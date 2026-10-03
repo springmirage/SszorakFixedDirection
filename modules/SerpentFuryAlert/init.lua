@@ -3,7 +3,7 @@ local mod=T:NewModule("SerpentFuryAlert","毒蛇之怒")
 mod.TAG="sfd_serpent_fury"
 -- Reserved recording paths. This release continues using the existing TTS wrapper.
 mod.VOICE_FILES={gather=T.addonPath.."media\\SerpentFury\\gather.ogg",switch=T.addonPath.."media\\SerpentFury\\switch.ogg",three=T.addonPath.."media\\SerpentFury\\three.ogg",two=T.addonPath.."media\\SerpentFury\\two.ogg",one=T.addonPath.."media\\SerpentFury\\one.ogg",go=T.addonPath.."media\\SerpentFury\\go.ogg"}
-mod.WAVES={24.5,75,151,202,278,329.5}
+-- Configured estimates use public settings, never live restricted power.
 mod.STAGES={
 {offset=-6,text="大团进",voice="集合分担"},
 {offset=-4,text="开关：4",voice="开关"},
@@ -12,6 +12,15 @@ mod.STAGES={
 {offset=-1,text="开关：1",voice="1"},
 {offset=0,text="开关：进",voice="进"},
 }
+mod.ENERGY_STAGES={
+{offset=-6,text="大团进",voice="集合分担"},
+{offset=-4,text="开关看能量",voice="开关看能量"},
+{offset=-2,text="2",voice="2"},
+{offset=-1,text="1",voice="1"},
+}
+function mod:StagesForWave(wave)
+return(wave==1 or wave==2 or wave==6)and self.ENERGY_STAGES or self.STAGES
+end
 function mod:Stop()
 T.Notify:CancelByTag(self.TAG)
 self.active=false;self.currentWave=nil;self.currentStage=nil;self.lastExecutedStage=nil
@@ -24,10 +33,12 @@ end
 function mod:OnDisable()self:Stop()end
 function mod:Resolve(elapsed)
 for wave,t in ipairs(self.WAVES)do
-if elapsed>=t-6 and elapsed<t+1 then
-for stage=#self.STAGES,1,-1 do
-if elapsed>=t+self.STAGES[stage].offset then
-local finish=stage==#self.STAGES and t+1 or t+self.STAGES[stage+1].offset
+local stages=self:StagesForWave(wave)
+local ending=stages==self.ENERGY_STAGES and t or t+1
+if elapsed>=t-6 and elapsed<ending then
+for stage=#stages,1,-1 do
+if elapsed>=t+stages[stage].offset then
+local finish=stage==#stages and ending or t+stages[stage+1].offset
 return wave,stage,finish
 end
 end
@@ -47,15 +58,15 @@ end
 local key=(wave-1)*#self.STAGES+stage
 if self.lastExecutedStage==key then return end
 self.currentWave=wave;self.currentStage=stage;self.lastExecutedStage=key
-local cue=self.STAGES[stage]
+local cue=self:StagesForWave(wave)[stage]
 T.Notify:Schedule({tag=self.TAG,channels={
 SERPENT_FURY={text=cue.text,duration=finish-elapsed,attention=true},
 TTS={text=cue.voice},
 }})
 end
 function mod:NextEvent(elapsed)
-for _,t in ipairs(self.WAVES)do
-for _,stage in ipairs(self.STAGES)do
+for wave,t in ipairs(self.WAVES)do
+for _,stage in ipairs(self:StagesForWave(wave))do
 local at=t+stage.offset
 if at>elapsed then return at,stage.text end
 end
@@ -63,6 +74,7 @@ end
 end
 function mod:OnInit()
 if self.db.enabled==nil then self.db.enabled=true end
+T.SoakConfig:Initialize(self)
 self:Stop()
 T:On("BOSS_ENGAGED",function(id,difficulty)
 self:Stop()

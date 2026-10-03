@@ -653,8 +653,6 @@ if recvCount>=3 then return end
 local idx=recvCount
 if idx==0 then
 clearLayers()
-startRoundTimer()
-T:Fire("WIND_OCTAGON_ROUND_RESET")
 end
 recvCount=recvCount+1
 local sequence=idx+1
@@ -665,9 +663,8 @@ applySenderVisibility()
 end
 function mod:SFDResetCycle()
 recvCount=0
--- Reset the three-click adapter, not the legacy assignment group/lifetime timer.
-clearLayers()
-if panel then panel:Hide()end
+hideAll()
+T:Fire("WIND_OCTAGON_ROUND_RESET")
 applySenderVisibility()
 end
 function mod:SFDStop()
@@ -1009,7 +1006,6 @@ dispatcher:RegisterEvent("CHAT_MSG_RAID_LEADER")
 end
 end
 local function startEngage()
-if engaged then return end
 engaged=true
 recvCount=0
 clearLayers()

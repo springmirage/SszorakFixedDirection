@@ -1,0 +1,43 @@
+{
+  "checks": [
+    {
+      "case": "retain most recent 100 real fights through actual encounter events",
+      "pass": true
+    },
+    {
+      "case": "test sessions retain 100 without removing any real fight",
+      "pass": true
+    },
+    {
+      "case": "legacy evidence unchanged; indexed into separate pools without clearing events",
+      "pass": true
+    },
+    {
+      "case": "real warning and notification requests observed without altering assignment result",
+      "pass": true
+    },
+    {
+      "case": "secret warning/marker/power values not read or persisted by observer",
+      "pass": true
+    },
+    {
+      "case": "300 event cap with explicit drops; stable timeline ticks do not spam logs",
+      "pass": true
+    },
+    {
+      "case": "logger failure does not alter existing event/assignment behavior",
+      "pass": true
+    },
+    {
+      "case": "config rejections in active fight locally print and record safe reason",
+      "pass": true
+    }
+  ],
+  "legacySavedCountsBefore": {
+    "RAID": 10,
+    "TEST": 0
+  },
+  "fightsPerPool": 100,
+  "eventsPerFight": 300,
+  "realClientVerified": false
+}

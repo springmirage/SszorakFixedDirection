@@ -52,17 +52,6 @@ local firedOccurrences={}
 local personalAssignments={}
 local pendingAssignment
 local warningFrame
-local function diagnostic(event,extra)
--- Snapshot ordinary readiness flags only. This observer cannot affect the caller.
-pcall(function()
-local data={markerRound=markerRound,
-point1Present=markerReady[1]==true,point2Present=markerReady[2]==true,
-point3Present=markerReady[3]==true,point4Present=markerReady[4]==true,
-pointsReady=markerReady[1]==true and markerReady[2]==true and markerReady[3]==true and markerReady[4]==true}
-for key,value in pairs(extra or{})do data[key]=value end
-T:Diagnostic(event,data)
-end)
-end
 local function cfg(key)
 local value=mod.db and mod.db[key]
 if value==nil then return DEFAULTS[key]end
@@ -208,10 +197,9 @@ L.orbpos_debug_line,
 elapsed,tostring(diff or"?"),
 severityText,durationText,result))
 end
-local function clearMarkers(reason)
+local function clearMarkers()
 markerTokens={}
 markerReady={}
-diagnostic("POINT_SET_RESET",{resetReason=reason or"GROUP_CLEARED"})
 if T.Notify and T.Notify.CancelByTag then
 T.Notify:CancelByTag(ALERT_TAG)
 end
@@ -219,17 +207,18 @@ T:Fire("ORB_POSITION_ALERT_COMPASS_HIDE")
 end
 local function startMarkerRound()
 markerRound=markerRound+1
-clearMarkers("MARKER_ROUND_START")
+clearMarkers()
 end
 local function fireTextAlert(window,markerToken,modeOverride)
-local shown=T.Fixed:Assignment(window,markerToken,modeOverride,cfg("duration"))
-if shown then diagnostic("ASSIGNMENT_ACCEPTED",{assignmentAccepted=true,slot=window.assignment.slot})
-else diagnostic("ASSIGNMENT_REJECTED",{assignmentRejected=true,rejectReason="NOTIFY_UNAVAILABLE",slot=window.assignment.slot})end
-return shown
+return T.Fixed:Assignment(window,markerToken,modeOverride)
 end
 local function showAssignment(window,debugIndex)
 if not cfg("enabled")then return false end
 local assignment=window.assignment
+if assignment.slot==4 then
+markerTokens[4]=T.Fixed:Point4Token()
+markerReady[4]=markerTokens[4]~=nil
+end
 if assignment.mode~="free"
 and(markerRound<window.round or not markerReady[assignment.slot])
 then
@@ -237,7 +226,7 @@ pendingAssignment={
 window=window,
 debugIndex=debugIndex,
 }
-diagnostic("ASSIGNMENT_REJECTED",{assignmentRejected=true,rejectReason="POINTS_NOT_READY",slot=assignment.slot})
+T.Fixed:MissingAssignment(window)
 return false,"waiting_marker"
 end
 local markerToken=markerTokens[assignment.slot]
@@ -249,11 +238,6 @@ local slot=tonumber(sequence)
 if not slot or slot<1 or slot>4 then return end
 markerTokens[slot]=markerToken
 markerReady[slot]=true
-diagnostic(slot==4 and"POINT4_SYNTHESIZED"or("POINT"..slot.."_RECEIVED"),
-{slot=slot,point4Anchor=slot==4 and T.Fixed.bossAnchor or nil})
-if markerReady[1]and markerReady[2]and markerReady[3]and markerReady[4]then
-diagnostic("POINT_SET_READY")
-end
 local pending=pendingAssignment
 if pending and pending.window.assignment.slot==slot then
 local shown=showAssignment(pending.window,pending.debugIndex)
@@ -266,7 +250,7 @@ end
 local function clearMarkerGroup()
 local pending=pendingAssignment
 pendingAssignment=nil
-clearMarkers("GROUP_CLEARED")
+clearMarkers()
 if pending and pending.debugIndex then
 T:Fire("DEBUG_SSZORAK_TEST_WARNING_RESULT",
 pending.debugIndex,false,false,pending.window,
@@ -275,7 +259,6 @@ end
 end
 local function startEncounter(encounterID,encounterDifficulty,startedAt)
 if tonumber(encounterID)~=TARGET_ENCOUNTER_ID or not T.Fixed:IsMythic(encounterDifficulty)then return end
-if engaged and difficulty==difficultyCode(encounterDifficulty)then return end
 engaged=true
 difficulty=difficultyCode(encounterDifficulty)
 fightStart=tonumber(startedAt)or GetTime()
@@ -283,7 +266,7 @@ markerRound=0
 firedOccurrences={}
 personalAssignments={}
 pendingAssignment=nil
-clearMarkers("ENCOUNTER_START")
+clearMarkers()
 end
 local function stopEncounter(encounterID)
 if encounterID and tonumber(encounterID)~=TARGET_ENCOUNTER_ID then return end
@@ -294,59 +277,35 @@ markerRound=0
 firedOccurrences={}
 personalAssignments={}
 pendingAssignment=nil
-clearMarkers("ENCOUNTER_END")
+clearMarkers()
 end
 function mod:OnWarning(info,debugIndex)
-T:DiagnosticCall("Warning")
-diagnostic("WARNING_CALLBACK_ENTER",{warningReceived=true})
 if debugActive and debugIndex==nil then
-diagnostic("WARNING_REJECTED",{warningRejected=true,rejectReason="TEST_ISOLATION"})
 return false,false,"real_warning_ignored"
 end
 if not(engaged and fightStart and type(info)=="table")then
-diagnostic("WARNING_REJECTED",{warningRejected=true,rejectReason="NOT_ENGAGED"})
 return false,false,"not_engaged"
 end
 local elapsed=GetTime()-fightStart
--- Legacy genuinely needs these two fields. Never guess a signature from time alone.
-if T.Fixed:IsOpaque(info.severity)or T.Fixed:IsOpaque(info.duration)then
-diagnostic("WARNING_REJECTED",{warningRejected=true,rejectReason="SECRET_CLASSIFICATION_FIELDS"})
-return false,false,"restricted_warning"
-end
+if T.Fixed:IsOpaque(info.severity)or T.Fixed:IsOpaque(info.duration)then return false,false,"restricted_warning"end
 local severity=tonumber(info.severity)
 local duration=tonumber(info.duration)
 local window=self:ClassifyWarning(
 difficulty,elapsed,severity,duration)
-if window then
-T:DiagnosticCall("BindWindow",window.key)
-diagnostic("WINDOW_MATCH",{matchedWindow=true,windowName="P"..window.position,windowIndex=window.index,slot=window.assignment.slot})
-diagnostic("SLOT_SELECTED",{slot=window.assignment.slot,windowName="P"..window.position,windowIndex=window.index})
-elseif matchesExpected(severity,WARNING_SEVERITY,0)and matchesExpected(duration,WARNING_DURATION,WARNING_DURATION_TOLERANCE)then
-diagnostic("WINDOW_NONE",{matchedWindow=false,rejectReason="NO_WINDOW"})
-diagnostic("WARNING_REJECTED",{warningRejected=true,rejectReason="NO_WINDOW"})
-else
-diagnostic("WARNING_REJECTED",{warningRejected=true,rejectReason="SIGNATURE_MISMATCH"})
-end
 if cfg("debug")then
 printWarningDebug(elapsed,difficulty,severity,duration,window)
 end
 if not cfg("enabled")then
-diagnostic("WARNING_REJECTED",{warningRejected=true,rejectReason="DISABLED"})
 return false,false,"disabled",window,elapsed
 end
 if not window then
 return false,false,"outside_window",nil,elapsed
 end
 if debugIndex~=nil and window.index~=debugIndex then
-diagnostic("WARNING_REJECTED",{warningRejected=true,rejectReason="UNEXPECTED_TEST_WINDOW"})
 return false,false,"unexpected_window",window,elapsed
 end
 local accepted,shown,reason=
 self:ApplyWarningWindow(window,debugIndex)
-diagnostic(accepted and"WARNING_ACCEPTED"or"WARNING_REJECTED",{
-warningAccepted=accepted==true,warningRejected=accepted~=true,
-rejectReason=not accepted and(reason=="duplicate"and"DUPLICATE"or reason=="assignment_locked"and"ASSIGNMENT_LOCKED"or"UNKNOWN")or nil,
-slot=window.assignment.slot})
 return accepted,shown,reason,window,elapsed
 end
 function mod:ApplyWarningWindow(window,debugIndex)
@@ -388,9 +347,7 @@ local function setConfig(key,value)
 if not mod.db then return end
 if key=="enabled"then
 mod.db.enabled=value and true or false
-if mod.db.enabled then
-mod:EnsureRuntime();mod:ReloadWarningWindows()
-else
+if not mod.db.enabled then
 local pending=pendingAssignment
 pendingAssignment=nil
 if pending and pending.debugIndex then
@@ -410,11 +367,9 @@ if duration then mod.db.duration=math.max(3,math.min(20,duration))end
 end
 end
 function mod:OnLogin()
-self:EnsureRuntime();self:ReloadWarningWindows()
 T:Fire("RAIDAURAWATCH_SET_SLOT_TEXTURES",RAID_AURA_RULE_KEY,nil)
 end
 function mod:OnInit()
-self:EnsureRuntime()
 if(self.db.schemaVersion or 0)<1 then
 if self.db.duration==10 then self.db.duration=11 end
 self.db.schemaVersion=1
@@ -432,17 +387,6 @@ print("|cffff4444SszorakFixedDirection/OrbPositionAlert|r "
 ..string.format(
 L.orbpos_template_error,"M",tostring(errors.M)))
 end
-end
-function mod:EnsureRuntime()
-if not warningFrame then warningFrame=CreateFrame("Frame")end
-warningFrame:RegisterEvent("ENCOUNTER_WARNING")
-warningFrame:SetScript("OnEvent",function(_,_,info)
-if T.TestHarness and T.TestHarness.active then return end
-self:OnWarning(info)
-end)
--- Standalone startup.lua already owns direct encounter events.
-if self._runtimeSubscribed then return end
-self._runtimeSubscribed=true
 T:On("BOSS_ENGAGED",startEncounter)
 T:On("BOSS_DISENGAGED",stopEncounter)
 T:On("WIND_OCTAGON_ROUND_RESET",startMarkerRound)
@@ -461,4 +405,10 @@ state.debug=cfg("debug")
 end)
 T:On("ORB_POSITION_ALERT_CONFIG_SET",setConfig)
 T:On("ORB_POSITION_ALERT_TEST",function(order)self:ShowTest(order)end)
+warningFrame=CreateFrame("Frame")
+warningFrame:RegisterEvent("ENCOUNTER_WARNING")
+warningFrame:SetScript("OnEvent",function(_,_,info)
+if T.TestHarness and T.TestHarness.active then return end
+self:OnWarning(info)
+end)
 end

@@ -37,7 +37,6 @@ if event=="ADDON_LOADED"then
 if(...)~=T.addonName then return end
 SszorakFixedDirectionDB=SszorakFixedDirectionDB or{}
 SszorakFixedDirectionDB.modules=SszorakFixedDirectionDB.modules or{}
-T:DiagnosticCall("Init")
 for _,mod in ipairs(T.modules)do
 SszorakFixedDirectionDB.modules[mod.name]=SszorakFixedDirectionDB.modules[mod.name]or{}
 mod.db=SszorakFixedDirectionDB.modules[mod.name]
@@ -50,15 +49,15 @@ if T.TestHarness.active then T.TestHarness:Stop()end
 local id,_,difficulty=...;T.Fixed:Start(id,difficulty)
 checkStartingRaidSize(id,difficulty)
 elseif event=="ENCOUNTER_END"then
-if(...)==3420 then hideRaidSizeWarning();T.Fixed:Stop("ENCOUNTER_END")end
+if(...)==3420 then hideRaidSizeWarning();T.Fixed:Stop()end
 elseif event=="GROUP_ROSTER_UPDATE"then
 if raidSizeWarning:IsShown()and GetNumGroupMembers()<=20 then hideRaidSizeWarning()end
 elseif event=="PLAYER_ENTERING_WORLD"then
 hideRaidSizeWarning()
-if T.Fixed.active then T.Fixed:Stop("PLAYER_ENTERING_WORLD")end
+if T.Fixed.active then T.Fixed:Stop()end
 elseif event=="PLAYER_LOGOUT"then
 hideRaidSizeWarning()
-T.Fixed:Stop("PLAYER_LOGOUT");for _,mod in ipairs(T.modules)do mod:OnLogout()end
+T.Fixed:Stop();for _,mod in ipairs(T.modules)do mod:OnLogout()end
 end
 end)
 SLASH_SSDFIXEDDIRECTION1="/sfd"
@@ -69,12 +68,11 @@ end
 SlashCmdList.SSDFIXEDDIRECTION=function(msg)
 local wind=T.moduleMap.WindOctagon
 msg=(msg or""):lower()
-if msg=="diag status"then T:DiagnosticCall("Status")
-elseif msg=="diag clear"then T:DiagnosticCall("Clear")
-elseif msg=="teststatus"then T.TestHarness:PrintStatus()
+if msg=="teststatus"then T.TestHarness:PrintStatus()
 elseif msg=="test"then T.Settings:Open("测试")
 elseif msg=="compass"then T.Settings:OpenLegacy(true)
 elseif msg=="anchors"then T.Settings:Create();T.Settings:EditText()
+elseif msg=="log"then T.SessionLog:Status()
 elseif msg=="status"then
 print("SFD · 周期 "..tostring(T.Fixed.cycle or 0).." · 风向发送 "..tostring(T.Fixed.senderClicks or 0).."/3 · 已接收 "..tostring(T.Fixed.chatReceived or 0))
 elseif msg=="stop"then if T.TestHarness.active then T.TestHarness:Stop()else T.Fixed:Stop()end

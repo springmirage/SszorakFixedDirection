@@ -1,0 +1,387 @@
+{
+  "checks": [
+    {
+      "case": "actual encounter event starts energy display; wrong encounters and difficulties stay hidden",
+      "pass": true
+    },
+    {
+      "case": "hardcoded shared targets and hybrid calculated/fixed times",
+      "pass": true
+    },
+    {
+      "case": "unit power events refresh; missing unit and API failure hide without stale value",
+      "pass": true
+    },
+    {
+      "case": "all six energy windows open at gather and restore exactly five seconds after predicted soak",
+      "pass": true
+    },
+    {
+      "case": "protected-value surrogate passed unchanged to UI sink; no live-power arithmetic",
+      "pass": true
+    },
+    {
+      "case": "same font and one row below existing reminder; anchor/style changes propagate",
+      "pass": true
+    },
+    {
+      "case": "wipe, world entry, restart and replay cleanup",
+      "pass": true
+    },
+    {
+      "case": "skipped frames execute only current valid stage; no replay of expired cues",
+      "pass": true
+    },
+    {
+      "case": "next-event preview uses wave-specific cues and omits go for energy waves",
+      "pass": true
+    },
+    {
+      "case": "all 30 scheduled cues through real encounter/ticker/TTS path",
+      "pass": true
+    },
+    {
+      "case": "orb-window-1",
+      "sameInputOriginalAndModifiedEqual": true
+    },
+    {
+      "case": "orb-window-2",
+      "sameInputOriginalAndModifiedEqual": true
+    },
+    {
+      "case": "orb-window-3",
+      "sameInputOriginalAndModifiedEqual": true
+    },
+    {
+      "case": "orb-window-4",
+      "sameInputOriginalAndModifiedEqual": true
+    },
+    {
+      "case": "orb-window-5",
+      "sameInputOriginalAndModifiedEqual": true
+    },
+    {
+      "case": "orb-window-6",
+      "sameInputOriginalAndModifiedEqual": true
+    },
+    {
+      "case": "orb-window-7",
+      "sameInputOriginalAndModifiedEqual": true
+    },
+    {
+      "case": "orb-window-8",
+      "sameInputOriginalAndModifiedEqual": true
+    },
+    {
+      "case": "orb-window-9",
+      "sameInputOriginalAndModifiedEqual": true
+    },
+    {
+      "case": "orb-window-10",
+      "sameInputOriginalAndModifiedEqual": true
+    },
+    {
+      "case": "orb-window-11",
+      "sameInputOriginalAndModifiedEqual": true
+    },
+    {
+      "case": "orb-window-12",
+      "sameInputOriginalAndModifiedEqual": true
+    },
+    {
+      "case": "duplicate-warning",
+      "sameInputOriginalAndModifiedEqual": true
+    },
+    {
+      "case": "late-message",
+      "sameInputOriginalAndModifiedEqual": true
+    },
+    {
+      "case": "duplicate-message",
+      "sameInputOriginalAndModifiedEqual": true
+    },
+    {
+      "case": "missing-cycle-recovery",
+      "sameInputOriginalAndModifiedEqual": true
+    },
+    {
+      "case": "missing-data",
+      "sameInputOriginalAndModifiedEqual": true
+    },
+    {
+      "case": "secret-warning",
+      "sameInputOriginalAndModifiedEqual": true
+    },
+    {
+      "case": "end-reset",
+      "sameInputOriginalAndModifiedEqual": true
+    }
+  ],
+  "scheduledExpected": [
+    {
+      "at": 19,
+      "text": "集合分担"
+    },
+    {
+      "at": 21,
+      "text": "开关看能量"
+    },
+    {
+      "at": 23,
+      "text": "2"
+    },
+    {
+      "at": 24,
+      "text": "1"
+    },
+    {
+      "at": 69,
+      "text": "集合分担"
+    },
+    {
+      "at": 71,
+      "text": "开关看能量"
+    },
+    {
+      "at": 73,
+      "text": "2"
+    },
+    {
+      "at": 74,
+      "text": "1"
+    },
+    {
+      "at": 145,
+      "text": "集合分担"
+    },
+    {
+      "at": 147,
+      "text": "开关"
+    },
+    {
+      "at": 148,
+      "text": "3"
+    },
+    {
+      "at": 149,
+      "text": "2"
+    },
+    {
+      "at": 150,
+      "text": "1"
+    },
+    {
+      "at": 151,
+      "text": "进"
+    },
+    {
+      "at": 196,
+      "text": "集合分担"
+    },
+    {
+      "at": 198,
+      "text": "开关"
+    },
+    {
+      "at": 199,
+      "text": "3"
+    },
+    {
+      "at": 200,
+      "text": "2"
+    },
+    {
+      "at": 201,
+      "text": "1"
+    },
+    {
+      "at": 202,
+      "text": "进"
+    },
+    {
+      "at": 272,
+      "text": "集合分担"
+    },
+    {
+      "at": 274,
+      "text": "开关"
+    },
+    {
+      "at": 275,
+      "text": "3"
+    },
+    {
+      "at": 276,
+      "text": "2"
+    },
+    {
+      "at": 277,
+      "text": "1"
+    },
+    {
+      "at": 278,
+      "text": "进"
+    },
+    {
+      "at": 323,
+      "text": "集合分担"
+    },
+    {
+      "at": 325,
+      "text": "开关看能量"
+    },
+    {
+      "at": 327,
+      "text": "2"
+    },
+    {
+      "at": 328,
+      "text": "1"
+    }
+  ],
+  "scheduledObserved": [
+    {
+      "at": 19.000000000000135,
+      "text": "集合分担"
+    },
+    {
+      "at": 21.000000000000163,
+      "text": "开关看能量"
+    },
+    {
+      "at": 23.000000000000192,
+      "text": "2"
+    },
+    {
+      "at": 24.000000000000206,
+      "text": "1"
+    },
+    {
+      "at": 69.04999999999822,
+      "text": "集合分担"
+    },
+    {
+      "at": 71.04999999999811,
+      "text": "开关看能量"
+    },
+    {
+      "at": 73.049999999998,
+      "text": "2"
+    },
+    {
+      "at": 74.04999999999794,
+      "text": "1"
+    },
+    {
+      "at": 145.04999999999873,
+      "text": "集合分担"
+    },
+    {
+      "at": 147.0499999999992,
+      "text": "开关"
+    },
+    {
+      "at": 148.04999999999941,
+      "text": "3"
+    },
+    {
+      "at": 149.04999999999964,
+      "text": "2"
+    },
+    {
+      "at": 150.04999999999987,
+      "text": "1"
+    },
+    {
+      "at": 151.00000000000009,
+      "text": "进"
+    },
+    {
+      "at": 196.00000000001032,
+      "text": "集合分担"
+    },
+    {
+      "at": 198.00000000001077,
+      "text": "开关"
+    },
+    {
+      "at": 199.000000000011,
+      "text": "3"
+    },
+    {
+      "at": 200.00000000001123,
+      "text": "2"
+    },
+    {
+      "at": 201.00000000001145,
+      "text": "1"
+    },
+    {
+      "at": 202.00000000001168,
+      "text": "进"
+    },
+    {
+      "at": 272.00000000002757,
+      "text": "集合分担"
+    },
+    {
+      "at": 274.000000000028,
+      "text": "开关"
+    },
+    {
+      "at": 275.00000000002825,
+      "text": "3"
+    },
+    {
+      "at": 276.0000000000285,
+      "text": "2"
+    },
+    {
+      "at": 277.0000000000287,
+      "text": "1"
+    },
+    {
+      "at": 278.00000000002893,
+      "text": "进"
+    },
+    {
+      "at": 323.00000000003917,
+      "text": "集合分担"
+    },
+    {
+      "at": 325.0000000000396,
+      "text": "开关看能量"
+    },
+    {
+      "at": 327.0000000000401,
+      "text": "2"
+    },
+    {
+      "at": 328.0000000000403,
+      "text": "1"
+    }
+  ],
+  "legacyRegressionRuns": [
+    {
+      "script": "test_sfd.py",
+      "exitCode": 0,
+      "output": "[\n  {\n    \"test\": \"complete three-cycle timeline; three hardware-click chat sends each; fourth blocked; low clear at explosions\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"test\": \"all 12 actual legacy warning windows; own target only; point4 after CENTER; exact expiry\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"test\": \"ranged DPS/healer allowlist; paladin/monk healer, melee DPS, tank excluded\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"test\": \"tank 00:01/00:33/01:22 and sender ON/OFF\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"test\": \"no synthetic debuff; wrong warning ignored; missing/secret token safe; local fourth works without sender\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"test\": \"wipe and repull resets every state and cancels ticker\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"test\": \"legacy sender/receiver settings and fixed compass settings construct\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"test\": \"normalized Moon/Star geometry; CENTER cue changes no tactical state or angle\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"test\": \"legacy first-assignment lock, small warning drift, next pair accepts new assignment\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"test\": \"namespace/SavedVariables/named frames/bindings isolated\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"test\": \"no live-facing/position/minimap code in loaded files\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"test\": \"latest LEGACY SECRET-SAFE contract; opaque UI sinks; no exact first3 path; six static labels; CENTER IDLE\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"test\": \"three-click gate before delayed chat echo; READY after third receive\",\n    \"result\": \"PASS\"\n  }\n]\n",
+      "stderr": ""
+    },
+    {
+      "script": "test_ui.py",
+      "exitCode": 0,
+      "output": "[\n  {\n    \"test\": \"exclusive settings windows and return callbacks\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"test\": \"legacy anchor editor opens, drag saves and moves real notification\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"test\": \"quick tests enter real four-slot chain; sender loopback and positions persist\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"test\": \"no obsolete direction controls; point4 uses fixed wording\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"test\": \"anchor edit exits safely on combat and before harness starts\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"test\": \"merged role excludes prewarnings; status copy and four tabs are player-facing\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"test\": \"m5 opens settings only and ignores parameters; sfd remains available\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"test\": \"assignment card emphasizes opaque icon; pulse pauses and expires; pooled normal text resets\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"test\": \"M5 oversized full roster warning includes outside players; difficulty, timeout and cleanup\",\n    \"result\": \"PASS\"\n  }\n]\n",
+      "stderr": ""
+    },
+    {
+      "script": "test_harness.py",
+      "exitCode": 0,
+      "output": "[\n  {\n    \"id\": \"TEST_HARNESS_01\",\n    \"test\": \"0.000 -> 390.000 automatic completion\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_02\",\n    \"test\": \"tank all nine movement cues with exact times\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_03\",\n    \"test\": \"ranged DPS retired prewarning stays silent\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_04\",\n    \"test\": \"ranged healer retired prewarning stays silent\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_05\",\n    \"test\": \"Holy Paladin zero ranged prewarnings\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_06\",\n    \"test\": \"Mistweaver zero ranged prewarnings\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_07\",\n    \"test\": \"melee DPS zero ranged prewarnings\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_08\",\n    \"test\": \"sender OFF zero wind cues\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_09\",\n    \"test\": \"sender ON exact 8/135/262 wind cues\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_10\",\n    \"test\": \"AUTO assignment sequence 1/4/2/3/1/4 through old classifier\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_11\",\n    \"test\": \"Point4 all three cycles from local anchor; fixed Boss-feet wording\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_12\",\n    \"test\": \"six exact Moon/Star timeline transitions\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_13\",\n    \"test\": \"CENTER IDLE keeps anchor and final angle\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_14\",\n    \"test\": \"pause freezes clock, timers, warning and animation for 30 real seconds\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_15\",\n    \"test\": \"restart resets elapsed, points, pending assignment, sender\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_16\",\n    \"test\": \"stop clears timers and encounter-only UI\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_17\",\n    \"test\": \"jump 02:20/03:00/05:40 rebuilds complete state without speech backlog\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_18\",\n    \"test\": \"10x finishes in 39 seconds with same cue sequence as 1x\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_19\",\n    \"test\": \"combat automatically stops test\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_20\",\n    \"test\": \"real Sszorak encounter takes over; live role restored\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_21\",\n    \"test\": \"actual test buttons + bindings local loopback; fourth shield; zero real chat\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_22\",\n    \"test\": \"fresh load never resumes a test; no permanent test state\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_23\",\n    \"test\": \"three-page settings builds and test controls call real harness\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_24\",\n    \"test\": \"390 live scheduler ends without ending encounter\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_25\",\n    \"test\": \"named secure macro has no-combat stop guard; original payload restored after test\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_26\",\n    \"test\": \"live config and actual clock/role restored; test preferences stay session-only\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_27\",\n    \"test\": \"paused missing-marker retries and view changes never advance encounter time\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_28\",\n    \"test\": \"static live classifier/assignment/secret sink/timeline unchanged; no fake global dispatcher or real send in harness\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_29\",\n    \"test\": \"internal prewarn states retained without text or speech; late tokens stay silent\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_30\",\n    \"test\": \"assignment simulation respects ranged-only eligibility across all slots and roles\",\n    \"result\": \"PASS\"\n  },\n  {\n    \"id\": \"TEST_HARNESS_31\",\n    \"test\": \"V0.3 visual-only rotation after second expiry plus half second; animation, jump, pause and reset\",\n    \"result\": \"PASS\"\n  }\n]\n",
+      "stderr": ""
+    }
+  ],
+  "realClientVerified": false,
+  "secretValueTest": "opaque mock surrogate only",
+  "currentInstalledModified": false
+}
