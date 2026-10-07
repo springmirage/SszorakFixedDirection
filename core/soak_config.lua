@@ -32,11 +32,22 @@ function P:FormatTime(v)
 local s=string.format("%.6f",v):gsub("0+$",""):gsub("%.$","")
 return s.." 秒"
 end
+function P:EnergyBase(times,i)
+return i==1 and -10 or times[i-1]+((i==3 or i==5)and 28 or 3)
+end
+function P:PreviewEnergy(elapsed,times)
+for i,at in ipairs(times)do
+if elapsed<=at then
+return math.floor(math.max(0,math.min(100,(elapsed-self:EnergyBase(times,i))*2)))
+end
+end
+return math.floor(math.max(0,math.min(100,(elapsed-(times[#times]+3))*2)))
+end
 function P:Build(c)
 if type(c)~="table"then return nil,"配置格式无效。"end
 local times={0,0,151,202,278,0};local energy={};local out={}
 for i=1,6 do
-local base=i==1 and -10 or times[i-1]+((i==3 or i==5)and 28 or 3)
+local base=self:EnergyBase(times,i)
 if i==3 or i==4 or i==5 then
 local raw=(times[i]-base)*2
 if raw>=100 or round(raw)>=100 then return nil,"第"..i.."次时间固定，预计整数怒气必须小于100。第2次必须晚于73.25秒，请调整第1、2次设置。"end

@@ -18,18 +18,29 @@ if self.frame then self.frame:Hide()end
 end
 function mod:Update()
 if not self.frame then return end
-if not self.engaged or(T.TestHarness and T.TestHarness.active)
-or not UnitExists or not UnitExists(UNIT)then self.frame:Hide();return end
+local harness=T.TestHarness
+local testing=harness and harness.active
+if not self.engaged or(not testing and(not UnitExists or not UnitExists(UNIT)))then self.frame:Hide();return end
+local inWindow=self.wave~=nil
+self.frame:SetBackdropColor(.025,.015,.035,inWindow and .78 or 0)
+self.frame:SetBackdropBorderColor(1,.15,.5,inWindow and 1 or 0)
 -- Keep restricted power opaque: pass it directly to the permitted text sink.
 -- No arithmetic, comparison, string formatting or logging of the live value.
 local ok=pcall(function()
-local value=UnitPower(UNIT)
 local serpent=T.moduleMap.SerpentFuryAlert
+local value
+if testing then
+-- Preview values follow logical time, including pause, speed changes and jumps.
+-- They are illustrative and never read or replace the live boss power API.
+value=T.SoakConfig:PreviewEnergy(harness.elapsed,serpent.WAVES)
+else
+value=UnitPower(UNIT)
+end
 local target=self.wave and serpent.TARGET_ENERGY[self.wave]
 if type(target)=="number"then
-self.frame.fs:SetFormattedText("BOSS能量值：%d / %d",value,target)
+self.frame.fs:SetFormattedText("%d / %d",value,target)
 else
-self.frame.fs:SetFormattedText("BOSS能量值：%d",value)
+self.frame.fs:SetFormattedText("%d",value)
 end
 end)
 if ok then self.frame:Show()else self.frame:Hide()end
@@ -38,7 +49,7 @@ function mod:OnInit()
 local f=CreateFrame("Frame",nil,UIParent,"BackdropTemplate")
 self.frame=f;f:SetSize(440,48);f:SetFrameStrata("DIALOG")
 f:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8x8",edgeFile="Interface\\Buttons\\WHITE8x8",edgeSize=1})
-f:SetBackdropColor(.025,.015,.035,.78);f:SetBackdropBorderColor(1,.15,.5,1)
+f:SetBackdropColor(.025,.015,.035,0);f:SetBackdropBorderColor(1,.15,.5,0)
 f.fs=f:CreateFontString(nil,"OVERLAY")
 f.fs:SetPoint("CENTER",f,"CENTER",0,0);f.fs:SetWidth(410);f.fs:SetTextColor(1,.15,.5)
 self:Layout();self:Stop()
@@ -50,7 +61,7 @@ f:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
 f:SetScript("OnEvent",function()self:Update()end)
 T:On("BOSS_ENGAGED",function(id,difficulty)
 self:Stop()
-if id==3420 and T.Fixed:IsMythic(difficulty)and not(T.TestHarness and T.TestHarness.active)then
+if id==3420 and T.Fixed:IsMythic(difficulty)then
 self.engaged=true;self:Update()
 end
 end)
@@ -62,7 +73,7 @@ local wave
 for i,at in ipairs(serpent and serpent.WAVES or{})do
 if elapsed>=at-6 and elapsed<at+5 then wave=i;break end
 end
-if self.wave~=wave then self.wave=wave;self:Update()end
+if self.wave~=wave or(T.TestHarness and T.TestHarness.active)then self.wave=wave;self:Update()end
 end)
 -- Follow the existing upper-centre reminder row when its saved position/style changes.
 local channel=T.Notify:GetChannel("SERPENT_FURY")
