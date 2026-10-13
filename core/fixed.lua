@@ -328,3 +328,8 @@ F.points[slot]=token
 F:PaintHighlights()
 F:RefreshPrewarn(false)
 end)
+
+-- Keep geometry/rotation/Boss icon methods; isolate all legacy assignment drivers.
+if T.compassOnlyMode then
+    for _,name in ipairs({"Say","CompleteMarkers","RefreshPoint4","RefreshAssignment","MissingAssignment","Assignment","SetAnchor","BeginCycle","RefreshPrewarn","Prewarn","Expire","Tick","Start","Stop","AllowDirectSend","UpdateSenderStatus"})do F[name]=T.noop end
+end

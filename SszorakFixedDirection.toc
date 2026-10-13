@@ -1,28 +1,32 @@
 ## Interface: 120100
 ## Title: Sszorak Fixed Direction
 ## Notes: M5 fixed tactical compass; face the boss before following directions.
-## Version: V0.9
+## Version: V0.10
 ## SavedVariables: SszorakFixedDirectionDB
 core\init.lua
+core\feature_policy.lua
 core\runtime_clock.lua
 core\locale.lua
 core\module.lua
-core\widget_api.lua
+# DISABLED V0.10: core\widget_api.lua
 modules\WindOctagon\compass_logic.lua
-core\tts.lua
-core\notify.lua
-core\notify_anchor_locale.lua
-core\notify_anchor.lua
-core\template.lua
+core\compass_only.lua
+# DISABLED V0.10: core\tts.lua
+# DISABLED V0.10: core\notify.lua
+# DISABLED V0.10: core\notify_anchor_locale.lua
+# DISABLED V0.10: core\notify_anchor.lua
+# DISABLED V0.10: core\template.lua
 core\fixed.lua
 modules\WindOctagon\init.lua
-modules\OrbPositionAlert\init.lua
-modules\WindOctagon\options.lua
-core\soak_config.lua
-modules\SerpentFuryAlert\init.lua
-modules\BossEnergy\init.lua
-core\session_log.lua
-core\test_harness.lua
-core\settings.lua
-core\soak_settings.lua
-core\startup.lua
+# DISABLED V0.10: modules\OrbPositionAlert\init.lua
+# DISABLED V0.10: modules\WindOctagon\options.lua
+# DISABLED V0.10: core\soak_config.lua
+# DISABLED V0.10: modules\SerpentFuryAlert\init.lua
+# DISABLED V0.10: modules\BossEnergy\init.lua
+# DISABLED V0.10: core\session_log.lua
+# DISABLED V0.10: core\test_harness.lua
+# DISABLED V0.10: core\settings.lua
+# DISABLED V0.10: core\soak_settings.lua
+# DISABLED V0.10: core\startup.lua
+core\energy_only.lua
+core\position_settings.lua

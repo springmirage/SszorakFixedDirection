@@ -1,0 +1,28 @@
+[
+  {
+    "syntaxFiles": 27
+  },
+  {
+    "test": "Lua 5.1 syntax for all source files",
+    "result": "PASS"
+  },
+  {
+    "activeSourceFiles": [
+      "core\\init.lua",
+      "core\\feature_policy.lua",
+      "core\\runtime_clock.lua",
+      "core\\locale.lua",
+      "core\\module.lua",
+      "modules\\WindOctagon\\compass_logic.lua",
+      "core\\compass_only.lua",
+      "core\\fixed.lua",
+      "modules\\WindOctagon\\init.lua",
+      "core\\energy_only.lua",
+      "core\\position_settings.lua"
+    ]
+  },
+  {
+    "test": "Legacy saved flags, forbidden side effects, retained displays, timeline and position persistence",
+    "result": "PASS"
+  }
+]

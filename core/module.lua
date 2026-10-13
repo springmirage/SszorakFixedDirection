@@ -2,6 +2,8 @@ local T,C,L=unpack(SszorakFixedDirection)
 local tinsert=table.insert
 local _subs={}
 function T:On(event,fn)
+-- Neither retained display needs the legacy event bus.
+if T.compassOnlyMode then return end
 assert(type(event)=="string","T:On 需要字符串 event")
 assert(type(fn)=="function","T:On 需要函数 callback")
 _subs[event]=_subs[event]or{}
@@ -54,6 +56,7 @@ profiler:EndEvent(perfRecord,perfStartedAt)
 end
 end
 function T:NewModule(name,displayName)
+assert(T:IsFeatureEnabled(name),"SFD release policy disabled module: "..tostring(name))
 assert(type(name)=="string"and name~="",
 "SszorakFixedDirection:NewModule 需要一个非空字符串作为模块名")
 assert(not T.moduleMap[name],

@@ -98,6 +98,7 @@ return v
 end
 local function setCfg(key,value)
 if mod.db then mod.db[key]=value end
+if key=="compassPos" then T:SavePosition("WindOctagon",key,value) end
 end
 local function compassMarkers()
 local source=Compass.DEFAULT_MARKERS
@@ -322,6 +323,7 @@ L.windoct_compass_preview_target or"Preview assignment")
 f.target:Show()
 end
 local function updateCompassPreviewTarget()
+if T.compassOnlyMode then if compassFrame then compassFrame.target:Hide()end;return end
 if compassLiveTargetActive then return end
 if compassPreviewing and cfg("compassEnabled")then
 local order=compassMarkers()
@@ -363,6 +365,7 @@ compassTargetTimer=C_Timer.NewTimer(
 math.max(1,tonumber(duration)or 10),hideCompassTarget)
 end
 function mod:SetCompassEnabled(value)
+if T.compassOnlyMode then return end
 setCfg("compassEnabled",value and true or false)
 if not value then
 compassPreviewing=false
@@ -685,6 +688,7 @@ local function activeChannel()
 return"RAID"
 end
 function mod:SendWind(idx)
+if T.compassOnlyMode then return end
 if T.TestHarness and T.TestHarness.active then return T.TestHarness:SendWind(idx)end
 if not idx or not BTN_FRAC[idx]then return end
 if not T.Fixed:AllowDirectSend()then return end
@@ -1148,6 +1152,7 @@ if senderPanel then senderPanel:Hide()end
 end
 end
 function mod:ApplyEnabled()
+if T.compassOnlyMode then applyCompassVisibility();return end
 enabled=cfg("enabled")and true or false
 if Compass.ShouldRun(
 enabled,cfg("compassEnabled"),debugTestOverride)
@@ -1169,10 +1174,16 @@ self.db.compassMarkers,self.db.compassMarkerLayoutVersion=
 Compass.MigrateMarkers(
 self.db.compassMarkers,
 self.db.compassMarkerLayoutVersion)
+if T.compassOnlyMode then return end
 T:On("ORB_POSITION_ALERT_COMPASS_SHOW",showCompassTarget)
 T:On("ORB_POSITION_ALERT_COMPASS_HIDE",hideCompassTarget)
 end
+function mod:SetCompassEncounterOnly(value)
+compassEncounterActive=value and true or false
+hideCompassTarget();applyCompassVisibility()
+end
 function mod:OnLogin()
+if T.compassOnlyMode then createCompass();applyCompassVisibility();return end
 if cfg("compassEnabled")then createCompass()end
 self:ApplyEnabled()
 end
@@ -1181,7 +1192,13 @@ stopHeroicClearTimers()
 hideCompassTarget()
 
 end
+if not T.compassOnlyMode then
 BINDING_HEADER_SSZORAKFIXEDDIRECTION_WIND="Sszorak Fixed Direction - "..(L.windoct_name or"八方风向")
 for _,idx in ipairs(DIRS)do
 _G["BINDING_NAME_SszorakFixedDirection_WIND_"..idx]=markName(idx)
+end
+end
+
+if T.compassOnlyMode then
+    for _,name in ipairs({"SFDResetCycle","SFDStop","SFDUpdateSenderStatus","SendWind","UpdateSenderPanel","SetLocked","SetScale","SetRowShown","SetSenderAnywhere","SetSenderAlpha","SetSenderScale","ResetPanelPos","ShowTest","SFDTestBegin","SFDTestReceive","SFDTestEnd"})do mod[name]=T.noop end
 end

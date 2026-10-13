@@ -1,4 +1,5 @@
 <Bindings>
+<!-- V0.10: wind sender bindings disabled; retained for future restoration.
 <Binding name="SszorakFixedDirection_WIND_1" category="SSZORAKFIXEDDIRECTION_WIND">
         local t = unpack(SszorakFixedDirection); local m = t and t.moduleMap and t.moduleMap.WindOctagon; if m and m.SendWind then m:SendWind(1) end
     </Binding>
@@ -23,4 +24,5 @@
 <Binding name="SszorakFixedDirection_WIND_8" category="SSZORAKFIXEDDIRECTION_WIND">
         local t = unpack(SszorakFixedDirection); local m = t and t.moduleMap and t.moduleMap.WindOctagon; if m and m.SendWind then m:SendWind(8) end
     </Binding>
+-->
 </Bindings>
