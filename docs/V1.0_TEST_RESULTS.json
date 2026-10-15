@@ -1,0 +1,61 @@
+{
+  "method": "Offline Lua 5.1; actual enabled TOC files, real scheduler/render methods with existing mocked API; not in-game verification",
+  "loaded": [
+    "core\\init.lua",
+    "core\\feature_policy.lua",
+    "core\\runtime_clock.lua",
+    "core\\locale.lua",
+    "core\\module.lua",
+    "modules\\WindOctagon\\compass_logic.lua",
+    "core\\compass_only.lua",
+    "core\\fixed.lua",
+    "modules\\WindOctagon\\init.lua",
+    "core\\energy_only.lua",
+    "core\\position_settings.lua"
+  ],
+  "results": [
+    {
+      "test": "original reproduces missing cycle 2 Moon reset",
+      "result": "PASS"
+    },
+    {
+      "test": "cycle 1: both forbidden windows, STAR animation, CENTER retention, Moon return",
+      "result": "PASS"
+    },
+    {
+      "test": "cycle 2: both forbidden windows, STAR animation, CENTER retention, Moon return",
+      "result": "PASS"
+    },
+    {
+      "test": "cycle 3: both forbidden windows, STAR animation, CENTER retention",
+      "result": "PASS"
+    },
+    {
+      "test": "all three cycles in order and lifecycle reset",
+      "result": "PASS"
+    },
+    {
+      "test": "wipe during rotation, restart from Moon and no stale timers",
+      "result": "PASS"
+    },
+    {
+      "test": "non M5 / non mythic stays inactive",
+      "result": "PASS"
+    },
+    {
+      "test": "enter world/logout clear orientation and motion",
+      "result": "PASS"
+    },
+    {
+      "test": "eight marker rotations, Boss center and anchor facing retain rendering",
+      "result": "PASS"
+    }
+  ],
+  "version": "V1.0",
+  "interface": 120105,
+  "luaSyntaxFiles": 27,
+  "tocDependencies": "PASS",
+  "mediaDependencies": "PASS",
+  "phaseReturn": "original CENTER-to-MOON anchor event; no separate reset timer or live position detector",
+  "thirdCycleFinalExpiries": "unchanged: not used for compass rotation; expire dispatch remains disabled"
+}

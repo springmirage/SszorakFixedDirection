@@ -12,10 +12,17 @@ local function stop()
     fixed.highlights = {}
     fixed.visualAngle = 0
     fixed.animating = false
+    fixed.bossAnchor = nil
+    fixed.facingAnchor = nil
+    fixed.compassState = "IDLE"
+    fixed.fromAngle = nil
+    fixed.toAngle = nil
+    fixed.animationElapsed = 0
     fixed.bossDisplayAnchor = nil
     fixed.bossMoving = false
     fixed.bossMoveTo = nil
     fixed.bossMoveFrom = nil
+    fixed.bossMoveStarted = nil
     fixed.bossFieldY = nil
     fixed:RenderRotation(0)
     local wind = T.moduleMap.WindOctagon
@@ -28,7 +35,7 @@ local function start(id, difficulty)
     local fixed = T.Fixed
     fixed.active = true
     fixed.highlights = {}
-    fixed:SetBossDisplayAnchor("MOON")
+    fixed:SetAnchor("MOON")
     T.moduleMap.WindOctagon:SetCompassEncounterOnly(true)
     startedAt = GetTime()
     nextEvent = 1
@@ -39,7 +46,7 @@ local function start(id, difficulty)
             local event = fixed.events[nextEvent]
             nextEvent = nextEvent + 1
             if event[2] == "anchor" then
-                fixed:SetBossDisplayAnchor(event[3])
+                fixed:SetAnchor(event[3])
             elseif event[2] == "rotate" then
                 fixed:SetCompassAnchor(event[3])
             end

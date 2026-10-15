@@ -223,6 +223,7 @@ function F:SetAnchor(anchor)
 self:SetBossDisplayAnchor(anchor)
 if anchor=="CENTER"then
 self.compassState="IDLE";self:PaintHighlights()
+if T.compassOnlyMode then return end
 local role=self:PlayerInfo()
 if role=="TANK"then self:Say("BOSS带到中场","sfd_tank",5)end
 return
@@ -230,6 +231,7 @@ end
 self.bossAnchor=anchor
 -- Boss movement and Point4 retain their original timing; STAR visuals wait for both cysts.
 if anchor=="MOON"then self:SetCompassAnchor(anchor)end
+if T.compassOnlyMode then return end
 self:RefreshPoint4()
 self:PaintHighlights();self:RefreshAssignment(false)
 local role=self:PlayerInfo()
@@ -271,7 +273,7 @@ F.events={
 {127,"cycle",2},{127,"anchor","MOON"},{135,"wind"},{153,"pre",1},{160,"anchor","STAR"},{198,"pre",2},{206,"anchor","CENTER"},
 {255,"cycle",3},{255,"anchor","MOON"},{262,"wind"},{280,"pre",1},{287,"anchor","STAR"},{322,"pre",2},{333,"anchor","CENTER"},
 }
-for _,row in ipairs(F.expiries)do F.events[#F.events+1]={row[2]+0.5,"rotate","STAR"}end
+for _,row in ipairs(F.expiries)do F.events[#F.events+1]={row[2]+1.5,"rotate","STAR"}end
 for cycle,row in ipairs(F.expiries)do for slot,time in ipairs(row)do F.events[#F.events+1]={time,"expire",slot,cycle}end end
 for index,event in ipairs(F.events)do event.order=index end
 table.sort(F.events,function(a,b)if a[1]==b[1]then return a.order<b.order end return a[1]<b[1]end)
@@ -331,5 +333,5 @@ end)
 
 -- Keep geometry/rotation/Boss icon methods; isolate all legacy assignment drivers.
 if T.compassOnlyMode then
-    for _,name in ipairs({"Say","CompleteMarkers","RefreshPoint4","RefreshAssignment","MissingAssignment","Assignment","SetAnchor","BeginCycle","RefreshPrewarn","Prewarn","Expire","Tick","Start","Stop","AllowDirectSend","UpdateSenderStatus"})do F[name]=T.noop end
+    for _,name in ipairs({"Say","CompleteMarkers","RefreshPoint4","RefreshAssignment","MissingAssignment","Assignment","BeginCycle","RefreshPrewarn","Prewarn","Expire","Tick","Start","Stop","AllowDirectSend","UpdateSenderStatus"})do F[name]=T.noop end
 end
